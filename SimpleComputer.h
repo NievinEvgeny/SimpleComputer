@@ -10,6 +10,8 @@
 
 int registr;
 int Memory[MEMORY_SIZE];
+int accumulator;
+int instructionCounter;
 
 void sc_memoryInit();
 

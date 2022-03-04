@@ -20,7 +20,7 @@ int mt_gotoXY(int X, int Y)
     {
         return -1;
     }
-    printf("\E[%d;%dH", X, Y);
+    printf("\E[%d;%dH", Y, X);
     return 0;
 }
 
