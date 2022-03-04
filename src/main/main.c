@@ -1,7 +1,7 @@
-#include "SimpleComputer.h"
-#include "interface.h"
-#include "myBigChar.h"
-#include "myTerm.h"
+#include "lib/SimpleComputer.h"
+#include "lib/interface.h"
+#include "lib/myBigChar.h"
+#include "lib/myTerm.h"
 #include <stdio.h>
 #include <stdlib.h>
 
