@@ -69,7 +69,7 @@ int main()
         }
     }
     */
-
+    /*
     int value1;
     printf("///////////////////////\n");
     bc_printA("ascii = pepega\n");
@@ -81,6 +81,19 @@ int main()
     printf("value = %d\n", value1);
     printf("///////////////////////\n");
     bc_printbigchar(bcAll[4], 1, 13, 4, 0);
+    */
+
+    sc_memoryInit();
+    sc_regInit();
+    int value2;
+    for (int i = 0; i < MEMORY_SIZE; i++)
+    {
+        sc_commandEncode(42, rand() % 126, &value2);
+        sc_memorySet(i, value2);
+    }
+    accumulator = 5034;
+    instructionCounter = 3;
+    show_interface();
 
     return 0;
 }
