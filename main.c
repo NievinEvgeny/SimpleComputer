@@ -1,4 +1,6 @@
 #include "SimpleComputer.h"
+#include "interface.h"
+#include "myBigChar.h"
 #include "myTerm.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,12 +17,13 @@ void printMenu()
 
 int main()
 {
-    /*sc_memoryInit();
+    /*
+    sc_memoryInit();
     sc_regInit();
     int value, command, operand;
     for (int i = 0; i < MEMORY_SIZE; i++)
     {
-        sc_commandEncode(rand() % 76, rand() % 150, &value);
+        sc_commandEncode(rand() % 76, rand() % 126, &value);
         sc_memorySet(i, value);
         printf("%d\n", Memory[i]);
     }
@@ -33,7 +36,9 @@ int main()
         printf("%d\n", Memory[i]);
     }
     sc_memoryGet(1, &value);
-    printf("value = %d", value);*/
+    printf("value = %d", value);
+    */
+    /*
     int item = -1, rows = 0, cols = 0, color;
     while (item != 6)
     {
@@ -63,5 +68,19 @@ int main()
             break;
         }
     }
+    */
+
+    int value1;
+    printf("///////////////////////\n");
+    bc_printA("ascii = pepega\n");
+    printf("///////////////////////\n");
+    bc_box(5, 5, 10, 10);
+    printf("///////////////////////\n");
+    bc_setbigcharpos(bcAll[4], 5, 5, 0);
+    bc_getbigcharpos(bcAll[4], 5, 4, &value1);
+    printf("value = %d\n", value1);
+    printf("///////////////////////\n");
+    bc_printbigchar(bcAll[4], 1, 13, 4, 0);
+
     return 0;
 }
