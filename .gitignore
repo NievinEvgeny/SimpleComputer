@@ -2,4 +2,6 @@
 main.c~
 bin
 doc
-.keep
+*.o
+*/.keep
+obj/*

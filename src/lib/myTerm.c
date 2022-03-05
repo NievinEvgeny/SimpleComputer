@@ -16,7 +16,7 @@ int mt_gotoXY(int X, int Y)
     {
         return -1;
     }
-    if ((Y > cols) || (Y <= 0) || (X > rows) || (X <= 0))
+    if ((X > cols) || (X <= 0) || (Y > rows) || (Y <= 0))
     {
         return -1;
     }
