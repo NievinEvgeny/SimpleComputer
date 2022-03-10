@@ -1,4 +1,5 @@
 #include "myTerm.h"
+#include <stdio.h>
 #include <sys/ioctl.h> // для функции ioctl
 #include <termios.h>   // для struct winsize
 #include <unistd.h>    // для констант STDIN_FILENO, STDOUT_FILENO и STDERR_FILENO - это файловые дескрипторы
