@@ -39,20 +39,20 @@ int mt_getscreensize(int* rows, int* cols)
 
 int mt_setfgcolor(enum colors color)
 {
-    if (color < COLOR_BLACK || color > COLOR_GREY)
+    if (color < COLOR_BLACK || color > COLOR_DEFAULT || color == 8)
     {
         return -1;
     }
-    printf("\E[%dm", color + 30);
+    printf("\E[3%dm", color);
     return 0;
 }
 
 int mt_setbgcolor(enum colors color)
 {
-    if (color < COLOR_BLACK || color > COLOR_GREY)
+    if (color < COLOR_BLACK || color > COLOR_DEFAULT || color == 8)
     {
         return -1;
     }
-    printf("\E[%dm", color + 40);
+    printf("\E[4%dm", color);
     return 0;
 }
