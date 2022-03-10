@@ -15,3 +15,5 @@ void print_instrcntr();
 void print_operation();
 
 void print_flags();
+
+void print_IO();

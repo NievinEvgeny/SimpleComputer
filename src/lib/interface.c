@@ -13,7 +13,13 @@ void show_interface()
     print_instrcntr();
     print_operation();
     print_flags();
-    mt_gotoXY(1, 25);
+    print_IO();
+}
+
+void print_IO()
+{
+    mt_gotoXY(1, 23);
+    printf("Input/Output:\n");
 }
 
 void print_memory()
@@ -68,16 +74,16 @@ void print_accum()
 {
     bc_box(64, 1, 88, 4);
     mt_gotoXY(70, 1);
-    printf("accumulator");
-    mt_gotoXY(74, 2);
+    printf(" accumulator ");
+    mt_gotoXY(75, 2);
     printf("+%x", accumulator);
 }
 
 void print_instrcntr()
 {
     bc_box(64, 4, 88, 7);
-    mt_gotoXY(67, 4);
-    printf("instructionCounter");
+    mt_gotoXY(66, 4);
+    printf(" instructionCounter ");
     mt_gotoXY(76, 5);
     printf("%d", instructionCounter);
 }
@@ -85,8 +91,8 @@ void print_instrcntr()
 void print_operation()
 {
     bc_box(64, 7, 88, 10);
-    mt_gotoXY(72, 7);
-    printf("operation");
+    mt_gotoXY(71, 7);
+    printf(" operation ");
     mt_gotoXY(75, 8);
     printf("???");
 }
@@ -94,8 +100,8 @@ void print_operation()
 void print_flags()
 {
     bc_box(64, 10, 88, 13);
-    mt_gotoXY(74, 10);
-    printf("flags");
-    mt_gotoXY(71, 11);
+    mt_gotoXY(73, 10);
+    printf(" flags ");
+    mt_gotoXY(72, 11);
     printf("P O M E T");
 }
