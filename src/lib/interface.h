@@ -1,6 +1,11 @@
 #pragma once
+#include "myReadKey.h"
 
-void show_interface();
+void run_interface();
+
+int do_pressedKey(enum keys pressedKey);
+
+void draw_interface();
 
 void print_memory();
 

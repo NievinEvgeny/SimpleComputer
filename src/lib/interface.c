@@ -1,11 +1,166 @@
 #include "interface.h"
 #include "SimpleComputer.h"
 #include "myBigChar.h"
+#include "myReadKey.h"
 #include "myTerm.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-void show_interface()
+int cursorX = 0, cursorY = 0;
+
+void run_interface()
 {
+    enum keys pressedKey;
+    rk_mytermregime(0, 1, 0, 1, 1);
+    while (pressedKey != KEY_q)
+    {
+        draw_interface();
+        rk_readkey(&pressedKey);
+        do_pressedKey(pressedKey);
+    }
+}
+
+void flush_input(void)
+{
+    char c;
+    while (scanf("%c", &c) == 1 && c != '\n')
+        ;
+}
+
+int do_pressedKey(enum keys pressedKey)
+{
+    if (pressedKey == KEY_other)
+    {
+        return 0;
+    }
+    if (pressedKey == KEY_s)
+    {
+        printf("\nВведите имя файла: ");
+        rk_mytermregime(1, 0, 0, 0, 0);
+        char filename[100];
+        fgets(filename, 100, stdin);
+        filename[strlen(filename) - 1] = '\0';
+        rk_mytermregime(0, 1, 0, 1, 1);
+        if (sc_memorySave(filename) == 0)
+        {
+            return 0;
+        }
+        return -1;
+    }
+    if (pressedKey == KEY_l)
+    {
+        printf("\nВведите имя файла: ");
+        rk_mytermregime(1, 0, 0, 0, 0);
+        char filename[100];
+        fgets(filename, 100, stdin);
+        filename[strlen(filename) - 1] = '\0';
+        rk_mytermregime(0, 1, 0, 1, 1);
+        if (sc_memoryLoad(filename) == 0)
+        {
+            return 0;
+        }
+        return -1;
+    }
+    if (pressedKey == KEY_f5)
+    {
+        rk_mytermregime(1, 0, 0, 0, 0);
+        char buffer[5];
+        if (read(0, &buffer, 4) == 4)
+        {
+            while (getchar() != '\n')
+            {
+            }
+        }
+        int value = atoi(buffer);
+        if (value > 9999)
+        {
+            return -1;
+        }
+        accumulator = value;
+        rk_mytermregime(0, 1, 0, 1, 1);
+        return 0;
+    }
+    if (pressedKey == KEY_f6)
+    {
+        rk_mytermregime(1, 0, 0, 0, 0);
+        char buffer[3];
+        if (read(0, &buffer, 2) == 2)
+        {
+            while (getchar() != '\n')
+            {
+            }
+        }
+        int value = atoi(buffer);
+        if (value > 99)
+        {
+            return -1;
+        }
+        instructionCounter = value;
+        rk_mytermregime(0, 1, 0, 1, 1);
+        return 0;
+    }
+    if (pressedKey == KEY_left)
+    {
+        if (cursorX > 0)
+        {
+            cursorX -= 1;
+            mt_gotoXY(cursorX, cursorY);
+        }
+        return 0;
+    }
+    if (pressedKey == KEY_right)
+    {
+        if (cursorX < 9)
+        {
+            cursorX += 1;
+            mt_gotoXY(cursorX, cursorY);
+        }
+        return 0;
+    }
+    if (pressedKey == KEY_up)
+    {
+        if (cursorY > 0)
+        {
+            cursorY -= 1;
+            mt_gotoXY(cursorX, cursorY);
+        }
+        return 0;
+    }
+    if (pressedKey == KEY_down)
+    {
+        if (cursorY < 9)
+        {
+            cursorY += 1;
+            mt_gotoXY(cursorX, cursorY);
+        }
+        return 0;
+    }
+    if (pressedKey == KEY_enter)
+    {
+        rk_mytermregime(1, 0, 0, 0, 0);
+        char buffer[5];
+        if (read(0, &buffer, 4) == 4)
+        {
+            while (getchar() != '\n')
+            {
+            }
+        }
+        int value = atoi(buffer);
+        if (value > 9999)
+        {
+            return -1;
+        }
+        Memory[cursorY * 10 + cursorX] = value;
+        rk_mytermregime(0, 1, 0, 1, 1);
+        return 0;
+    }
+}
+
+void draw_interface()
+{
+    mt_clrscr();
     print_memory();
     print_cell();
     print_keys();
@@ -31,15 +186,25 @@ void print_memory()
     {
         for (int j = 0; j < 10; j++)
         {
+            if ((i * 10 + j) == (cursorY * 10 + cursorX))
+            {
+                mt_setfgcolor(COLOR_BLACK);
+                mt_setbgcolor(COLOR_RED);
+            }
             mt_gotoXY(2 + j * 6, i + 2);
-            printf("+%x ", Memory[i * 10 + j]);
+            printf("+%0*x ", 4, Memory[i * 10 + j]);
+            if ((i * 10 + j) == (cursorY * 10 + cursorX))
+            {
+                mt_setfgcolor(COLOR_DEFAULT);
+                mt_setbgcolor(COLOR_DEFAULT);
+            }
         }
     }
 }
 
 void print_cell()
 {
-    int memvalue = Memory[instructionCounter];
+    int memvalue = Memory[cursorY * 10 + cursorX];
     bc_box(1, 13, 51, 23);
     for (int i = 4; i > 0; i--)
     {

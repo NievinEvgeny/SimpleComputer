@@ -9,13 +9,19 @@
 
 int main()
 {
-    /*
     sc_memoryInit();
     sc_regInit();
+    int value2;
+    for (int i = 0; i < MEMORY_SIZE; i++)
+    {
+        sc_commandEncode(42, rand() % 126, &value2);
+        sc_memorySet(i, value2);
+    }
     accumulator = 0;
     instructionCounter = 0;
-    show_interface();
-    */
+    run_interface();
+
+    /*
     struct termios options;
     enum keys pressed_key;
     while (pressed_key != KEY_q)
@@ -47,5 +53,6 @@ int main()
     printf("\n");
     rk_mytermregime(0, 0, 0, 1, 0);
     rk_mytermregime(1, 0, 0, 0, 0);
+    */
     return 0;
 }
