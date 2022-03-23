@@ -77,12 +77,12 @@ int sc_regSet(int flag, int value)
     {
         if (value == 1)
         {
-            registr = registr | (1 << (flag - 1));
+            registr = registr | (1 << flag);
             return 0;
         }
         if (value == 0)
         {
-            registr = registr & (~(1 << (flag - 1)));
+            registr = registr & (~(1 << flag));
             return 0;
         }
     }

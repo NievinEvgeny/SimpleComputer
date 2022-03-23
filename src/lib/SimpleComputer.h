@@ -2,6 +2,8 @@
 
 #define MEMORY_SIZE 100
 
+#define CHECK_BIT(reg, flag) (((reg) >> flag) & 1)
+
 #define P 1 //переполнение при выполнении операции
 #define O 2 //ошибка деления на 0
 #define M 3 //ошибка выхода за границы памяти

@@ -260,6 +260,29 @@ void print_flags()
     bc_box(64, 10, 88, 13);
     mt_gotoXY(73, 10);
     printf(" flags ");
-    mt_gotoXY(72, 11);
-    printf("P O M E T");
+    mt_gotoXY(73, 11);
+    if (CHECK_BIT(registr, P) == 1)
+        printf("P");
+    else
+        printf(" ");
+    if (CHECK_BIT(registr, O) == 1)
+        printf("O");
+    else
+        printf(" ");
+    if (CHECK_BIT(registr, M) == 1)
+        printf("M");
+    else
+        printf(" ");
+    if (CHECK_BIT(registr, E) == 1)
+        printf("E");
+    else
+        printf(" ");
+    if (CHECK_BIT(registr, T) == 1)
+        printf("T");
+    else
+        printf(" ");
+    if (CHECK_BIT(registr, I) == 1)
+        printf("I");
+    else
+        printf(" ");
 }
