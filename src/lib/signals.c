@@ -3,7 +3,7 @@
 #include <signal.h>
 #include <unistd.h>
 
-void timer(int sig)
+void timer()
 {
     draw_interface();
     instructionCounter++;
@@ -13,7 +13,7 @@ void timer(int sig)
     }
 }
 
-void usrsig(int sig)
+void usrsig()
 {
     alarm(0);
     sc_memoryInit();

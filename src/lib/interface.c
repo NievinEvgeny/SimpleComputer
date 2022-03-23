@@ -3,6 +3,7 @@
 #include "myBigChar.h"
 #include "myReadKey.h"
 #include "myTerm.h"
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,130 +25,154 @@ void run_interface()
 
 int do_pressedKey(enum keys pressedKey)
 {
-    if (pressedKey == KEY_other)
+    if (CHECK_BIT(registr, I))
     {
-        return 0;
-    }
-    if (pressedKey == KEY_s)
-    {
-        printf("\nВведите имя файла: ");
-        rk_mytermregime(1, 0, 0, 0, 0);
-        char filename[100];
-        fgets(filename, 100, stdin);
-        filename[strlen(filename) - 1] = '\0';
-        rk_mytermregime(0, 1, 0, 1, 1);
-        if (sc_memorySave(filename) == 0)
+        if (pressedKey == KEY_other)
         {
             return 0;
         }
-        return -1;
-    }
-    if (pressedKey == KEY_l)
-    {
-        printf("\nВведите имя файла: ");
-        rk_mytermregime(1, 0, 0, 0, 0);
-        char filename[100];
-        fgets(filename, 100, stdin);
-        filename[strlen(filename) - 1] = '\0';
-        rk_mytermregime(0, 1, 0, 1, 1);
-        if (sc_memoryLoad(filename) == 0)
+        if (pressedKey == KEY_s)
         {
+            printf("\nВведите имя файла: ");
+            rk_mytermregime(1, 0, 0, 0, 0);
+            char filename[100];
+            fgets(filename, 100, stdin);
+            filename[strlen(filename) - 1] = '\0';
+            rk_mytermregime(0, 1, 0, 1, 1);
+            if (sc_memorySave(filename) == 0)
+            {
+                return 0;
+            }
+            return -1;
+        }
+        if (pressedKey == KEY_l)
+        {
+            printf("\nВведите имя файла: ");
+            rk_mytermregime(1, 0, 0, 0, 0);
+            char filename[100];
+            fgets(filename, 100, stdin);
+            filename[strlen(filename) - 1] = '\0';
+            rk_mytermregime(0, 1, 0, 1, 1);
+            if (sc_memoryLoad(filename) == 0)
+            {
+                return 0;
+            }
+            return -1;
+        }
+        if (pressedKey == KEY_f5)
+        {
+            rk_mytermregime(1, 0, 0, 0, 0);
+            char buffer[5];
+            if (read(0, &buffer, 4) == 4)
+            {
+                while (getchar() != '\n')
+                {
+                }
+            }
+            int value = atoi(buffer);
+            if (value > 9999)
+            {
+                return -1;
+            }
+            accumulator = value;
+            rk_mytermregime(0, 1, 0, 1, 1);
             return 0;
         }
-        return -1;
-    }
-    if (pressedKey == KEY_f5)
-    {
-        rk_mytermregime(1, 0, 0, 0, 0);
-        char buffer[5];
-        if (read(0, &buffer, 4) == 4)
+        if (pressedKey == KEY_f6)
         {
-            while (getchar() != '\n')
+            rk_mytermregime(1, 0, 0, 0, 0);
+            char buffer[3];
+            if (read(0, &buffer, 2) == 2)
             {
+                while (getchar() != '\n')
+                {
+                }
             }
-        }
-        int value = atoi(buffer);
-        if (value > 9999)
-        {
-            return -1;
-        }
-        accumulator = value;
-        rk_mytermregime(0, 1, 0, 1, 1);
-        return 0;
-    }
-    if (pressedKey == KEY_f6)
-    {
-        rk_mytermregime(1, 0, 0, 0, 0);
-        char buffer[3];
-        if (read(0, &buffer, 2) == 2)
-        {
-            while (getchar() != '\n')
+            int value = atoi(buffer);
+            if (value > 99)
             {
+                return -1;
             }
+            instructionCounter = value;
+            rk_mytermregime(0, 1, 0, 1, 1);
+            return 0;
         }
-        int value = atoi(buffer);
-        if (value > 99)
+        if (pressedKey == KEY_left)
         {
-            return -1;
-        }
-        instructionCounter = value;
-        rk_mytermregime(0, 1, 0, 1, 1);
-        return 0;
-    }
-    if (pressedKey == KEY_left)
-    {
-        if (cursorX > 0)
-        {
-            cursorX -= 1;
-            mt_gotoXY(cursorX, cursorY);
-        }
-        return 0;
-    }
-    if (pressedKey == KEY_right)
-    {
-        if (cursorX < 9)
-        {
-            cursorX += 1;
-            mt_gotoXY(cursorX, cursorY);
-        }
-        return 0;
-    }
-    if (pressedKey == KEY_up)
-    {
-        if (cursorY > 0)
-        {
-            cursorY -= 1;
-            mt_gotoXY(cursorX, cursorY);
-        }
-        return 0;
-    }
-    if (pressedKey == KEY_down)
-    {
-        if (cursorY < 9)
-        {
-            cursorY += 1;
-            mt_gotoXY(cursorX, cursorY);
-        }
-        return 0;
-    }
-    if (pressedKey == KEY_enter)
-    {
-        rk_mytermregime(1, 0, 0, 0, 0);
-        char buffer[5];
-        if (read(0, &buffer, 4) == 4)
-        {
-            while (getchar() != '\n')
+            if (cursorX > 0)
             {
+                cursorX -= 1;
+                mt_gotoXY(cursorX, cursorY);
             }
+            return 0;
         }
-        int value = atoi(buffer);
-        if (value > 9999)
+        if (pressedKey == KEY_right)
         {
-            return -1;
+            if (cursorX < 9)
+            {
+                cursorX += 1;
+                mt_gotoXY(cursorX, cursorY);
+            }
+            return 0;
         }
-        Memory[cursorY * 10 + cursorX] = value;
-        rk_mytermregime(0, 1, 0, 1, 1);
-        return 0;
+        if (pressedKey == KEY_up)
+        {
+            if (cursorY > 0)
+            {
+                cursorY -= 1;
+                mt_gotoXY(cursorX, cursorY);
+            }
+            return 0;
+        }
+        if (pressedKey == KEY_down)
+        {
+            if (cursorY < 9)
+            {
+                cursorY += 1;
+                mt_gotoXY(cursorX, cursorY);
+            }
+            return 0;
+        }
+        if (pressedKey == KEY_enter)
+        {
+            rk_mytermregime(1, 0, 0, 0, 0);
+            char buffer[5];
+            if (read(0, &buffer, 4) == 4)
+            {
+                while (getchar() != '\n')
+                {
+                }
+            }
+            int value = atoi(buffer);
+            if (value > 9999)
+            {
+                return -1;
+            }
+            Memory[cursorY * 10 + cursorX] = value;
+            rk_mytermregime(0, 1, 0, 1, 1);
+            return 0;
+        }
+        if (pressedKey == KEY_t)
+        {
+            raise(SIGALRM);
+        }
+    }
+    if (pressedKey == KEY_i)
+    {
+        raise(SIGUSR1);
+    }
+    if (pressedKey == KEY_r)
+    {
+        if (CHECK_BIT(registr, I))
+        {
+            sc_regSet(I, 0);
+            raise(SIGALRM);
+        }
+        else
+        {
+            alarm(0);
+            sc_regSet(I, 1);
+        }
     }
 }
 
@@ -261,27 +286,27 @@ void print_flags()
     mt_gotoXY(73, 10);
     printf(" flags ");
     mt_gotoXY(73, 11);
-    if (CHECK_BIT(registr, P) == 1)
+    if (CHECK_BIT(registr, P))
         printf("P");
     else
         printf(" ");
-    if (CHECK_BIT(registr, O) == 1)
+    if (CHECK_BIT(registr, O))
         printf("O");
     else
         printf(" ");
-    if (CHECK_BIT(registr, M) == 1)
+    if (CHECK_BIT(registr, M))
         printf("M");
     else
         printf(" ");
-    if (CHECK_BIT(registr, E) == 1)
+    if (CHECK_BIT(registr, E))
         printf("E");
     else
         printf(" ");
-    if (CHECK_BIT(registr, T) == 1)
+    if (CHECK_BIT(registr, T))
         printf("T");
     else
         printf(" ");
-    if (CHECK_BIT(registr, I) == 1)
+    if (CHECK_BIT(registr, I))
         printf("I");
     else
         printf(" ");

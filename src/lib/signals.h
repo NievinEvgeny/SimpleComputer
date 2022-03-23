@@ -2,6 +2,6 @@
 
 void sig_Set();
 
-void timer(int sig);
+void timer();
 
 void usrsig();
