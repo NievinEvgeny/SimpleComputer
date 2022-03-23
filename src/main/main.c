@@ -1,8 +1,5 @@
 #include "lib/SimpleComputer.h"
 #include "lib/interface.h"
-#include "lib/myBigChar.h"
-#include "lib/myReadKey.h"
-#include "lib/myTerm.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <termios.h>
