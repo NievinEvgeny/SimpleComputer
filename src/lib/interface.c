@@ -276,8 +276,15 @@ void print_operation()
     bc_box(64, 7, 88, 10);
     mt_gotoXY(71, 7);
     printf(" operation ");
-    mt_gotoXY(75, 8);
-    printf("???");
+    mt_gotoXY(72, 8);
+    int command, operand, isCommand;
+    isCommand = (Memory[cursorY * 10 + cursorX] >> 15) & 1;
+    sc_commandDecode(Memory[cursorY * 10 + cursorX], &command, &operand);
+    if (isCommand == 0)
+        printf("+");
+    else
+        printf(" ");
+    printf("%02x : %02x", command, operand);
 }
 
 void print_flags()
