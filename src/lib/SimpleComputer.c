@@ -61,7 +61,7 @@ int sc_memoryLoad(char* filename)
 
 void sc_regInit()
 {
-    for (int i = 1; i <= 5; i++)
+    for (int i = 1; i <= 6; i++)
     {
         sc_regSet(i, 0);
     }
@@ -69,7 +69,7 @@ void sc_regInit()
 
 int sc_regSet(int flag, int value)
 {
-    if ((flag < 1) || (flag > 5))
+    if ((flag < 1) || (flag > 6))
     {
         return -1;
     }
@@ -90,7 +90,7 @@ int sc_regSet(int flag, int value)
 
 int sc_regGet(int flag, int* value)
 {
-    if ((flag < 1) || (flag > 5))
+    if ((flag < 1) || (flag > 6))
     {
         return -1;
     }
