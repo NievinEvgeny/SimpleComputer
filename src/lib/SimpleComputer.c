@@ -61,7 +61,7 @@ int sc_memoryLoad(char* filename)
 
 void sc_regInit()
 {
-    for (int i = 1; i <= 6; i++)
+    for (int i = 1; i <= 5; i++)
     {
         sc_regSet(i, 0);
     }
@@ -122,11 +122,11 @@ int sc_commandDecode(int value, int* command, int* operand)
 {
     if (((value >> 15) & 0x1) != 0)
     {
-        sc_regSet(T, 1);
+        sc_regSet(E, 1);
         return -1;
     }
     *command = value & 0x3F80;
     *operand = value & 0x7F;
-    sc_regSet(T, 0);
+    sc_regSet(E, 0);
     return 1;
 }

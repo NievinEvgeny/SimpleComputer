@@ -11,7 +11,7 @@ void timer()
     {
         instructionCounter = 0;
     }
-    if (!CHECK_BIT(registr, I))
+    if (!CHECK_BIT(registr, T))
     {
         alarm(1);
     }
@@ -22,7 +22,7 @@ void usrsig()
     alarm(0);
     sc_memoryInit();
     sc_regInit();
-    sc_regSet(I, 1);
+    sc_regSet(T, 1);
     instructionCounter = 0;
     accumulator = 0;
 }

@@ -25,7 +25,7 @@ void run_interface()
 
 int do_pressedKey(enum keys pressedKey)
 {
-    if (CHECK_BIT(registr, I))
+    if (CHECK_BIT(registr, T))
     {
         if (pressedKey == KEY_other)
         {
@@ -163,15 +163,15 @@ int do_pressedKey(enum keys pressedKey)
     }
     if (pressedKey == KEY_r)
     {
-        if (CHECK_BIT(registr, I))
+        if (CHECK_BIT(registr, T))
         {
-            sc_regSet(I, 0);
+            sc_regSet(T, 0);
             raise(SIGALRM);
         }
         else
         {
             alarm(0);
-            sc_regSet(I, 1);
+            sc_regSet(T, 1);
         }
     }
 }
@@ -305,16 +305,12 @@ void print_flags()
         printf("M");
     else
         printf(" ");
-    if (CHECK_BIT(registr, E))
-        printf("E");
-    else
-        printf(" ");
     if (CHECK_BIT(registr, T))
         printf("T");
     else
         printf(" ");
-    if (CHECK_BIT(registr, I))
-        printf("I");
+    if (CHECK_BIT(registr, E))
+        printf("E");
     else
         printf(" ");
 }
