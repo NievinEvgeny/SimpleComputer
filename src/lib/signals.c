@@ -7,6 +7,10 @@ void timer()
 {
     draw_interface();
     instructionCounter++;
+    if (instructionCounter > 100)
+    {
+        instructionCounter = 0;
+    }
     if (!CHECK_BIT(registr, I))
     {
         alarm(1);

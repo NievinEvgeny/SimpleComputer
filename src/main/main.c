@@ -10,6 +10,7 @@ int main()
     sc_memoryInit();
     sc_regInit();
     sig_Set();
+    sc_regSet(I, 1);
     accumulator = 0;
     instructionCounter = 0;
     run_interface();
