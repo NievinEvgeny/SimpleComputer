@@ -1,11 +1,13 @@
 #include "SimpleComputer.h"
 #include "interface.h"
+#include "units.h"
 #include <signal.h>
 #include <unistd.h>
 
 void timer()
 {
     draw_interface();
+    CU();
     instructionCounter++;
     if (instructionCounter > 100)
     {
