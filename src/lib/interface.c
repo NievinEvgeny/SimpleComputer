@@ -284,7 +284,7 @@ void print_operation()
         printf("+");
     else
         printf(" ");
-    printf("%02x : %02x", command, operand);
+    printf("%02x : %02x", command >> 7, operand);
 }
 
 void print_flags()
