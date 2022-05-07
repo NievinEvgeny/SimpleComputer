@@ -39,6 +39,14 @@ int ALU(int command, int operand)
     case 0x33: /* MUL */
         accumulator *= Memory[operand];
         break;
+
+    case 0x63: /* RCR */
+        accumulator = (Memory[instructionCounter] >> 1) | ((Memory[instructionCounter] & 1) << 13);
+        if ((accumulator > ((int)(~0x7FFF))) && (accumulator <= 0x7FFF))
+        {
+            accumulator &= 0x7FFF;
+        }
+        break;
     }
 
     return 0;
@@ -59,7 +67,7 @@ void CU()
         sc_regSet(T, 1);
         return;
     }
-    if ((command >= 0x30) && (command <= 0x33))
+    if (((command >= 0x30) && (command <= 0x33)) || (command == 0x63))
     {
         if (ALU(command, operand) != 0)
         {
@@ -75,9 +83,11 @@ void CU()
             {
                 sc_regSet(P, 1);
                 sc_regSet(T, 1);
-                return;
             }
-            Memory[operand] = n | 0x8000;
+            else
+            {
+                Memory[operand] = n | 0x8000;
+            }
             break;
 
         case 0x11: /* WRITE */
@@ -112,14 +122,6 @@ void CU()
 
         case 0x43: /* HALT */
             sc_regSet(T, 1);
-            break;
-
-        case 0x63: /* RCR */
-            accumulator = (Memory[instructionCounter] >> 1) | ((Memory[instructionCounter] & 1) << 13);
-            if ((accumulator > ((int)(~0x7FFF))) && (accumulator <= 0x7FFF))
-            {
-                accumulator &= 0x7FFF;
-            }
             break;
         }
     }
