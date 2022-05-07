@@ -108,14 +108,14 @@ int sc_commandEncode(int command, int operand, int* value)
         printf("Неправильный операнд");
         return -1;
     }
-    if ((command > 76 || command < 51) && (command > 43 || command < 40) && (command > 33 || command < 30) && (command > 21 || command < 20)
-        && (command > 10 || command < 11))
+    if ((command >= 0x51 && command <= 0x76) || (command >= 0x40 && command <= 0x43) || (command >= 0x30 && command <= 0x33)
+        || (command >= 0x20 && command <= 0x21) || (command >= 0x10 && command <= 0x11))
     {
-        printf("Неправильная команда");
-        return -1;
+        *value = ((command << 7) | operand) & (~(1 << 15));
+        return *value;
     }
-    *value = ((command << 7) | operand) & (~(1 << 15));
-    return *value;
+    printf("Неправильная команда");
+    return -1;
 }
 
 int sc_commandDecode(int value, int* command, int* operand)
