@@ -1,4 +1,5 @@
 #include "SimpleComputer.h"
+#include <stdio.h>
 
 int ALU(int command, int operand)
 {
@@ -45,7 +46,7 @@ int ALU(int command, int operand)
 
 void CU()
 {
-    int command, operand;
+    int command, operand, n;
 
     if (sc_commandDecode(Memory[instructionCounter], &command, &operand) != 0)
     {
@@ -70,9 +71,17 @@ void CU()
         switch (command)
         {
         case 0x10: /* READ */
+            if (!scanf("%d", &n) || n > 0x3FFF || n < 0)
+            {
+                sc_regSet(P, 1);
+                sc_regSet(T, 1);
+                return;
+            }
+            Memory[operand] = n | 0x8000;
             break;
 
         case 0x11: /* WRITE */
+            printf("Ячейка №%d = %x", operand, Memory[instructionCounter] & 0x7FFF);
             break;
 
         case 0x20: /* LOAD */
@@ -106,6 +115,11 @@ void CU()
             break;
 
         case 0x63: /* RCR */
+            accumulator = (Memory[instructionCounter] >> 1) | ((Memory[instructionCounter] & 1) << 13);
+            if ((accumulator > ((int)(~0x7FFF))) && (accumulator <= 0x7FFF))
+            {
+                accumulator &= 0x7FFF;
+            }
             break;
         }
     }

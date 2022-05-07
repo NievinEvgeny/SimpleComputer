@@ -15,7 +15,7 @@ void timer()
     }
     if (!CHECK_BIT(registr, T))
     {
-        alarm(1);
+        alarm(3);
     }
 }
 
