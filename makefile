@@ -3,7 +3,6 @@ LIB_NAME = lib
 
 CFLAGS = -Wall
 CPPFLAGS = -I src
-CPPFLAGS_TEST = -I src
 
 BIN_DIR = bin
 OBJ_DIR = obj
