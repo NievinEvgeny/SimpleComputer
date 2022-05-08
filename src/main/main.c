@@ -1,5 +1,5 @@
-#include "lib/SimpleComputer.h"
-#include "lib/interface.h"
+#include <lib/SimpleComputer.h>
+#include <lib/interface.h>
 #include <lib/signals.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -7,6 +7,7 @@ int ALU(int command, int operand)
     {
     case 0x30: /* ADD */
         accumulator += Memory[operand];
+        accumulator &= 0x7FFF;
         break;
 
     case 0x31: /* SUB */
@@ -38,6 +39,7 @@ int ALU(int command, int operand)
 
     case 0x33: /* MUL */
         accumulator *= Memory[operand];
+        accumulator &= 0x7FFF;
         break;
 
     case 0x63: /* RCR */

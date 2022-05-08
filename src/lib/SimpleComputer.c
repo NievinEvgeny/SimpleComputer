@@ -103,7 +103,7 @@ int sc_regGet(int flag, int* value)
 
 int sc_commandEncode(int command, int operand, int* value)
 {
-    if (operand > 127 || operand < 0)
+    if (operand > 100 || operand < 0)
     {
         printf("Неправильный операнд");
         return -1;
