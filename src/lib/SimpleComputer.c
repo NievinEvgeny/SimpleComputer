@@ -126,6 +126,7 @@ int sc_commandDecode(int value, int* command, int* operand)
         return -1;
     }
     *command = value & 0x3F80;
+    *command = *command >> 7;
     *operand = value & 0x7F;
     sc_regSet(E, 0);
     return 0;
