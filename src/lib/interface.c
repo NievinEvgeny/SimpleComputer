@@ -144,7 +144,7 @@ int do_pressedKey(enum keys pressedKey)
                 }
             }
             int value = atoi(buffer);
-            if (value > 9999)
+            if (value > 0x3FFF)
             {
                 return -1;
             }
@@ -210,7 +210,15 @@ void print_memory()
                 mt_setbgcolor(COLOR_RED);
             }
             mt_gotoXY(2 + j * 6, i + 2);
-            printf("+%0*x ", 4, Memory[i * 10 + j]);
+            if ((Memory[i * 10 + j] >> 15) & 1)
+            {
+                printf(" ");
+            }
+            else
+            {
+                printf("+");
+            }
+            printf("%0*x ", 4, Memory[i * 10 + j]);
             if ((i * 10 + j) == (cursorY * 10 + cursorX))
             {
                 mt_setfgcolor(COLOR_DEFAULT);
@@ -229,12 +237,15 @@ void print_cell()
         bc_printbigchar(bcAll[memvalue % 16], 2 + 10 * i, 14, COLOR_GREY, COLOR_BLACK);
         memvalue /= 16;
     }
-    bc_printbigchar(bcp, 2, 14, COLOR_GREY, COLOR_BLACK);
+    if (!((Memory[cursorY * 10 + cursorX] >> 15) & 1))
+    {
+        bc_printbigchar(bcp, 2, 14, COLOR_GREY, COLOR_BLACK);
+    }
 }
 
 void print_keys()
 {
-    bc_box(52, 13, 88, 23);
+    bc_box(52, 13, 89, 23);
     mt_gotoXY(55, 13);
     printf(" Keys: ");
     mt_gotoXY(53, 14);
@@ -255,7 +266,7 @@ void print_keys()
 
 void print_accum()
 {
-    bc_box(64, 1, 88, 4);
+    bc_box(64, 1, 89, 4);
     mt_gotoXY(70, 1);
     printf(" accumulator ");
     mt_gotoXY(75, 2);
@@ -264,7 +275,7 @@ void print_accum()
 
 void print_instrcntr()
 {
-    bc_box(64, 4, 88, 7);
+    bc_box(64, 4, 89, 7);
     mt_gotoXY(66, 4);
     printf(" instructionCounter ");
     mt_gotoXY(76, 5);
@@ -273,23 +284,26 @@ void print_instrcntr()
 
 void print_operation()
 {
-    bc_box(64, 7, 88, 10);
+    bc_box(64, 7, 89, 10);
     mt_gotoXY(71, 7);
     printf(" operation ");
     mt_gotoXY(72, 8);
-    int command, operand, isCommand;
-    isCommand = (Memory[cursorY * 10 + cursorX] >> 15) & 1;
-    sc_commandDecode(Memory[cursorY * 10 + cursorX], &command, &operand);
-    if (isCommand == 0)
-        printf("+");
-    else
+    int command, operand;
+    sc_commandDecode(Memory[cursorY * 10 + cursorX] & 0x3FFF, &command, &operand);
+    if ((Memory[cursorY * 10 + cursorX] >> 15) & 1)
+    {
         printf(" ");
+    }
+    else
+    {
+        printf("+");
+    }
     printf("%02x : %02x", command, operand);
 }
 
 void print_flags()
 {
-    bc_box(64, 10, 88, 13);
+    bc_box(64, 10, 89, 13);
     mt_gotoXY(73, 10);
     printf(" flags ");
     mt_gotoXY(73, 11);
