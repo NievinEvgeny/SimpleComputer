@@ -8,14 +8,14 @@ void timer()
 {
     draw_interface();
     CU();
-    instructionCounter++;
-    if (instructionCounter > 100)
-    {
-        instructionCounter = 0;
-    }
     if (!CHECK_BIT(registr, T))
     {
-        alarm(3);
+        instructionCounter++;
+        if (instructionCounter > 100)
+        {
+            instructionCounter = 0;
+        }
+        alarm(1);
     }
 }
 

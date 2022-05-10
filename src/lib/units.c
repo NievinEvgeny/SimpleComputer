@@ -1,5 +1,6 @@
 #include "SimpleComputer.h"
 #include <stdio.h>
+#include <unistd.h>
 
 int ALU(int command, int operand)
 {
@@ -81,19 +82,22 @@ void CU()
         switch (command)
         {
         case 0x10: /* READ */
+            sc_regSet(T, 1);
+            printf("Введите значение: ");
             if (!scanf("%d", &n) || n > 0x3FFF || n < 0)
             {
                 sc_regSet(P, 1);
-                sc_regSet(T, 1);
             }
             else
             {
                 Memory[operand] = n | 0x8000;
+                sc_regSet(T, 0);
             }
             break;
 
         case 0x11: /* WRITE */
-            printf("Ячейка №%d = %x", operand, Memory[instructionCounter] & 0x7FFF);
+            printf("Ячейка №%d = %x\n", operand, Memory[operand] & 0x7FFF);
+            sleep(2);
             break;
 
         case 0x20: /* LOAD */
