@@ -269,8 +269,8 @@ void print_accum()
     bc_box(64, 1, 89, 4);
     mt_gotoXY(70, 1);
     printf(" accumulator ");
-    mt_gotoXY(75, 2);
-    printf("+%x", accumulator);
+    mt_gotoXY(74, 2);
+    printf("+%2x", accumulator);
 }
 
 void print_instrcntr()
