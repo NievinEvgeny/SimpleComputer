@@ -96,7 +96,7 @@ void CU()
             break;
 
         case 0x11: /* WRITE */
-            printf("Ячейка №%d = %x\n", operand, Memory[operand] & 0x7FFF);
+            printf("Ячейка №%d = %d\n", operand, Memory[operand] & 0x7FFF);
             sleep(2);
             break;
 

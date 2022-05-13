@@ -270,7 +270,7 @@ void print_accum()
     mt_gotoXY(70, 1);
     printf(" accumulator ");
     mt_gotoXY(74, 2);
-    printf("+%2x", accumulator);
+    printf("+%2d", accumulator);
 }
 
 void print_instrcntr()
