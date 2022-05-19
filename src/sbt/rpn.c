@@ -1,4 +1,6 @@
 #include "rpn.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 int check_brackets(char* str)
 {
@@ -122,12 +124,14 @@ struct stack_t* stack_push(struct stack_t* head, char letter)
 
 char stack_pop(struct stack_t** head)
 {
+    struct stack_t* ptr;
     if (*head == NULL)
     {
         return '\0';
     }
-    *head = *head->next;
-    return *head->ch;
+    ptr = *head;
+    *head = ptr->next;
+    return ptr->ch;
 }
 
 int get_prior(char ch)
