@@ -10,6 +10,8 @@ int get_keyword_code(char* str);
 
 int check_in_out(char* str);
 
+int check_goto(char* str, int lines[2][MAXLINES]);
+
 int sa_start_line(int lines[2][MAXLINES], int sb_line);
 
 int check_letter_cell(char cell, int* letters);

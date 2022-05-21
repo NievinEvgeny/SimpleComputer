@@ -94,6 +94,19 @@ int check_in_out(char* str)
     return 0;
 }
 
+int check_goto(char* str, int lines[2][MAXLINES])
+{
+    int index = atoi(str);
+    for (int i = 0; i < MAXLINES; i++)
+    {
+        if (index == lines[0][i])
+        {
+            return lines[1][i - 1] + 1;
+        }
+    }
+    return -1;
+}
+
 int sa_start_line(int lines[2][MAXLINES], int sb_line)
 {
     if (sb_line == 0)
@@ -146,6 +159,13 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int key, char* st
         break;
 
     case KEYW_GOTO:
+        int cell = check_goto(str, lines);
+        if (cell == -1)
+        {
+            return -1;
+        }
+        fprintf(output, "%d JUMP %d \n", sa_line, cell);
+        lines[1][sb_line] = sa_line;
         break;
 
     case KEYW_IF:
