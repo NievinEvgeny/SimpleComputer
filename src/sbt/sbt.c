@@ -48,11 +48,31 @@ int get_tokens(char* line, int* line_index, char* keyword)
     strcpy(line, ptr);
 }
 
+int get_keyword_code(char* str)
+{
+    if (strcmp(str, "REM") == 0)
+        return KEYW_REM;
+    if (strcmp(str, "INPUT") == 0)
+        return KEYW_INPUT;
+    if (strcmp(str, "OUTPUT") == 0)
+        return KEYW_OUTPUT;
+    if (strcmp(str, "GOTO") == 0)
+        return KEYW_GOTO;
+    if (strcmp(str, "IF") == 0)
+        return KEYW_IF;
+    if (strcmp(str, "LET") == 0)
+        return KEYW_LET;
+    if ((strcmp(str, "END") == 0) || (strcmp(str, "END\n") == 0))
+        return KEYW_END;
+
+    return -1;
+}
+
 int main(int argc, char* argv[])
 {
-    char keyw_str[256], line[256];
+    char keyw_str[MAXLINES], line[MAXLINES];
     FILE *input, *output;
-    int keyw; //Команда (второй аргумент sb)
+    int keyw; //Операция (второй аргумент sb)
     int line_index; //Индекс строки (первый аргумент sb)
 
     if (argc != 3)
@@ -88,6 +108,14 @@ int main(int argc, char* argv[])
         if (check_tokens == 1)
         {
             continue;
+        }
+
+        keyw = get_keyword_code(keyw_str);
+
+        if (keyw == -1)
+        {
+            fprintf(output, "Ошибка программы\n");
+            return -1;
         }
     }
 
