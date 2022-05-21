@@ -52,7 +52,7 @@ $(OBJ_DIR)/$(SRC_DIR)/$(LIB_NAME)/%.o: $(SRC_DIR)/$(LIB_NAME)/%.c
 
 .PHONY: clean
 clean:
-	$(RM) $(APP_PATH) $(LIB_PATH) $(SAT_PATH) bin/sat.o
+	$(RM) $(APP_PATH) $(LIB_PATH) $(SAT_PATH) $(SBT_PATH) bin/sat.o bin/s.sa
 	find $(OBJ_DIR) -name '*.o' -exec $(RM) '{}' \;
 	find $(OBJ_DIR) -name '*.d' -exec $(RM) '{}' \;
 
