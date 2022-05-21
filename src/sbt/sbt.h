@@ -8,4 +8,12 @@ int get_tokens(char* line, int* line_index, char* keyword);
 
 int get_keyword_code(char* str);
 
+int check_in_out(char* str);
+
+int sa_start_line(int lines[2][MAXLINES], int sb_line);
+
+int check_letter_cell(char cell, int* letters);
+
+int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int key, char* str, int* letters, FILE* output);
+
 int main(int argc, char* argv[]);
