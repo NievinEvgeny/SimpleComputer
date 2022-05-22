@@ -82,6 +82,11 @@ int get_keyword_code(char* str)
 int check_in_out(char* str)
 {
     int flag = 0;
+
+    if (str[0] == '\0' || str[0] == '\n')
+    {
+        return -1;
+    }
     for (int i = 0; str[i] != '\0' && str[i] != '\n'; i++)
     {
         if (!(str[i] >= 'A' && str[i] <= 'Z'))
@@ -108,6 +113,7 @@ int check_goto(char* str, int lines[2][MAXLINES])
 {
     char* ptr;
     int index = strtol(str, &ptr, 10);
+
     if (*ptr != '\n' && *ptr != '\0')
     {
         return -1;
@@ -175,6 +181,7 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int key, char* st
 
     case KEYW_GOTO: {
         int cell = check_goto(str, lines);
+
         if (cell == -1)
         {
             return -1;
