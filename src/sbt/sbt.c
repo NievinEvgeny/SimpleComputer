@@ -17,6 +17,18 @@ int check_argv(char* argv[])
     return -1;
 }
 
+int check_line_indexes(int line_num, int lines[MAXLINES])
+{
+    if (line_num > 0)
+    {
+        if (lines[line_num - 1] >= lines[line_num])
+        {
+            return -1;
+        }
+    }
+    return 0;
+}
+
 int get_tokens(char* line, int* line_index, char* keyword)
 {
     char* ptr = strtok(line, " \t\n");
@@ -44,6 +56,7 @@ int get_tokens(char* line, int* line_index, char* keyword)
         return 0;
     }
     strcpy(line, ptr);
+    return 0;
 }
 
 int get_keyword_code(char* str)
@@ -261,6 +274,12 @@ int main(int argc, char* argv[])
         }
 
         sb_to_sa_lines[0][line_num] = line_index;
+
+        if (check_line_indexes(line_num, sb_to_sa_lines[0]) == -1)
+        {
+            fprintf(output, "Ошибка программы\n");
+            return -1;
+        }
 
         if (parsing(sb_to_sa_lines, line_num, &var_num, keyw, line, letters, output) == -1)
         {
