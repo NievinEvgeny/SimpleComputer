@@ -93,7 +93,12 @@ int check_in_out(char* str)
 
 int check_goto(char* str, int lines[2][MAXLINES])
 {
-    int index = atoi(str);
+    char* ptr;
+    int index = strtol(str, &ptr, 10);
+    if (*ptr != '\n' && *ptr != '\0')
+    {
+        return -1;
+    }
     for (int i = 0; i < MAXLINES; i++)
     {
         if (index == lines[0][i])
@@ -194,7 +199,7 @@ int main(int argc, char* argv[])
 {
     char keyw_str[MAXLINES], line[MAXLINES];
     FILE *input, *output;
-    int line_num = 0;
+    int line_num = 0; //Номер строки
     int var_num = 89; //Хранение переменных в памяти (89-99)
     int keyw; //Операция (второй аргумент sb)
     int letters[ALPHABET]; //Объявленные переменные
