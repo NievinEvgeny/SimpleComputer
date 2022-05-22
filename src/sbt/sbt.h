@@ -9,6 +9,8 @@ enum keywords { KEYW_REM = 1, KEYW_INPUT = 2, KEYW_OUTPUT = 3, KEYW_GOTO = 4, KE
 
 int check_argv(char* argv[]);
 
+int check_line_indexes(int line_num, int lines[MAXLINES]);
+
 int get_tokens(char* line, int* line_index, char* keyword);
 
 int get_keyword_code(char* str);

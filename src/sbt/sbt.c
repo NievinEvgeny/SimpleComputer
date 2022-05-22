@@ -257,7 +257,7 @@ int main(int argc, char* argv[])
 
         if (check_tokens == -1)
         {
-            fprintf(output, "Ошибка программы\n");
+            fprintf(output, "Ошибка: неправильные аргументы в строке №%d\n", line_num + 1);
             return -1;
         }
         if (check_tokens == 1)
@@ -269,7 +269,7 @@ int main(int argc, char* argv[])
 
         if (keyw == -1)
         {
-            fprintf(output, "Ошибка программы\n");
+            fprintf(output, "Ошибка: несуществующая операция в строке №%d\n", line_num + 1);
             return -1;
         }
 
@@ -277,13 +277,13 @@ int main(int argc, char* argv[])
 
         if (check_line_indexes(line_num, sb_to_sa_lines[0]) == -1)
         {
-            fprintf(output, "Ошибка программы\n");
+            fprintf(output, "Ошибка: последовательность номеров строк должна быть строго возрастающей\n");
             return -1;
         }
 
         if (parsing(sb_to_sa_lines, line_num, &var_num, keyw, line, letters, output) == -1)
         {
-            fprintf(output, "Ошибка программы\n");
+            fprintf(output, "Ошибка: не удалось преобразовать строку №%d в simple assembler\n", line_num + 1);
             return -1;
         }
         if (keyw == KEYW_END)
