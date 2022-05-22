@@ -4,9 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAXLINES 256
-#define ALPHABET 26
-
 int check_argv(char* argv[])
 {
     char *input, *output;
@@ -158,7 +155,7 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int key, char* st
         lines[1][sb_line] = sa_line;
         break;
 
-    case KEYW_GOTO:
+    case KEYW_GOTO: {
         int cell = check_goto(str, lines);
         if (cell == -1)
         {
@@ -167,6 +164,7 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int key, char* st
         fprintf(output, "%d JUMP %d \n", sa_line, cell);
         lines[1][sb_line] = sa_line;
         break;
+    }
 
     case KEYW_IF:
         break;
@@ -236,6 +234,7 @@ int main(int argc, char* argv[])
 
     while (fgets(line, MAXLINES, input))
     {
+        //После get_tokens, в line остаётся последний токен - параметры
         int check_tokens = get_tokens(line, &line_index, keyw_str);
 
         if (check_tokens == -1)
