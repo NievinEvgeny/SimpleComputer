@@ -151,7 +151,7 @@ int check_letter_cell(char cell, int* letters)
 
 int s_push(Stack_t* stack, const int value)
 {
-    if (stack->size >= STACK_MAX_SIZE)
+    if (stack->size >= MEMSIZE)
     {
         return -1;
     }
@@ -255,7 +255,7 @@ int parsing_rpn(char* rpn, int answer_cell, int* sa_line, int* letters, FILE* ou
     return 0;
 }
 
-int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int key, char* str, int* letters, FILE* output)
+int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int memory_nums[MEMSIZE], int key, char* str, int* letters, FILE* output)
 {
     int sa_line = sa_start_line(lines, sb_line);
 
@@ -266,13 +266,16 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int key, char* st
         {
             return -1;
         }
-        *var_num += 1;
-        if (*var_num > 99)
+        if (letters[str[0] - 'A'] != -1)
         {
             return -1;
         }
+
+        *var_num -= 1;
+
         fprintf(output, "%d READ %d \n", sa_line, *var_num);
         letters[str[0] - 'A'] = *var_num;
+        memory_nums[*var_num] = 0;
         lines[1][sb_line] = sa_line;
         break;
 
@@ -302,6 +305,8 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int key, char* st
 
     case KEYW_LET: {
         char* answer_cell = strtok(str, "= \n");
+        char* string = strtok(NULL, "=\n");
+        char rpn[100];
 
         if (check_in_out(str) == -1)
         {
@@ -309,13 +314,11 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int key, char* st
         }
         if (letters[answer_cell[0] - 'A'] == -1)
         {
-            *var_num += 1;
-            if (*var_num > 99)
-                return -1;
-            letters[answer_cell[0] - 'A'] = *var_num;
-        }
+            *var_num -= 1;
 
-        char rpn[100], *string = strtok(NULL, "=\n");
+            letters[answer_cell[0] - 'A'] = *var_num;
+            memory_nums[*var_num] = 0;
+        }
 
         if (translate_to_rpn(rpn, string) == -1)
             return -1;
@@ -327,11 +330,11 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int key, char* st
 
     case KEYW_END:
         fprintf(output, "%d HALT 00 \n", sa_line);
-        for (int i = 0; i < ALPHABET; i++)
+        for (int i = 0; i < MEMSIZE; i++)
         {
-            if (letters[i] != -1)
+            if (memory_nums[i] != -1)
             {
-                fprintf(output, "%d = +1234 \n", letters[i]);
+                fprintf(output, "%d = +%.4d \n", i, memory_nums[i]);
             }
         }
         lines[1][sb_line] = sa_line;
@@ -348,12 +351,17 @@ int main(int argc, char* argv[])
     char keyw_str[MAXLINES], line[MAXLINES];
     FILE *input, *output;
     int line_num = 0; //Номер строки
-    int var_num = 89; //Хранение переменных в памяти (89-99)
+    int var_num = 100; //Номера переменных в памяти
+    int memory_nums[MEMSIZE]; //Хранение переменных и констант
     int keyw; //Операция (второй аргумент sb)
     int letters[ALPHABET]; //Объявленные переменные
     int line_index; //Индекс строки (первый аргумент sb)
     int sb_to_sa_lines[2][MAXLINES]; //Соответствие номера строки sb первой строке sa
 
+    for (int i = 0; i < MEMSIZE; i++)
+    {
+        memory_nums[i] = -1;
+    }
     for (int i = 0; i < ALPHABET; i++)
     {
         letters[i] = -1;
@@ -416,7 +424,7 @@ int main(int argc, char* argv[])
             return -1;
         }
 
-        if (parsing(sb_to_sa_lines, line_num, &var_num, keyw, line, letters, output) == -1)
+        if (parsing(sb_to_sa_lines, line_num, &var_num, memory_nums, keyw, line, letters, output) == -1)
         {
             fprintf(output, "Ошибка: не удалось преобразовать строку №%d в simple assembler\n", line_num + 1);
             return -1;
