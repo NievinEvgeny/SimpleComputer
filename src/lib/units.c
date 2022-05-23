@@ -105,7 +105,7 @@ void CU()
             break;
 
         case 0x21: /* STORE */
-            Memory[operand] = accumulator;
+            Memory[operand] = accumulator | 0x8000;
             break;
 
         case 0x40: /* JUMP */
