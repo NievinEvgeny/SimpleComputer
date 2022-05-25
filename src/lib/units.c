@@ -129,6 +129,13 @@ void CU()
         case 0x43: /* HALT */
             sc_regSet(T, 1);
             break;
+
+        case 0x55: /* JNS */
+            if (accumulator < 0x8000)
+            {
+                instructionCounter = operand - 1;
+            }
+            break;
         }
     }
 }

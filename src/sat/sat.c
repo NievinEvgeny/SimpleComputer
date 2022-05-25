@@ -51,6 +51,8 @@ int arg2_command(char* str)
         return 0x42;
     if (strcmp(str, "HALT") == 0)
         return 0x43;
+    if (strcmp(str, "JNS") == 0)
+        return 0x55;
     if (strcmp(str, "RCR") == 0)
         return 0x63;
     return -1;
