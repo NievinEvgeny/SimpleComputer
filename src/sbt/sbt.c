@@ -130,6 +130,10 @@ int check_goto(char* str, int lines[2][MAXLINES])
 
 int sa_start_line(int lines[2][MAXLINES], int sb_line)
 {
+    if (lines[1][sb_line] != -1)
+    {
+        return lines[1][sb_line] + 1;
+    }
     if (sb_line == 0)
     {
         return 0;
@@ -147,6 +151,56 @@ int check_letter_cell(char cell, int* letters)
         }
     }
     return -1;
+}
+
+int if_get_cell(int* sa_line, int* var_num, int memory_nums[MEMSIZE], char* str, int* letters, FILE* output)
+{
+    if (str[0] >= 'A' && str[0] <= 'Z')
+    {
+        return letters[str[0] - 'A'];
+    }
+    else
+    {
+        char* ptr;
+        int index = strtol(str, &ptr, 10);
+        if (*ptr != '\0')
+            return -1;
+        *var_num -= 1;
+        memory_nums[*var_num] = index;
+        return *var_num;
+    }
+}
+
+int if_jump_other_oper(
+        int* sa_line,
+        int lines[2][MAXLINES],
+        int sb_line,
+        int* var_num,
+        int memory_nums[MEMSIZE],
+        int key_if,
+        char* str_if,
+        int* letters,
+        FILE* output)
+{
+    int line_num;
+    int point_1_in_file;
+    int point_2_in_file;
+
+    point_1_in_file = ftell(output); // remember point 1 in FILE
+    fprintf(output, "%d JUMP %d \n", *sa_line, 0); // tmp JUMP СТРОГО В ТАКОЙ ФОРМЕ "%d JUMP %d \n"
+    line_num = *sa_line; // remember num of line
+
+    lines[1][sb_line] = *sa_line;
+
+    if (parsing(lines, sb_line, var_num, memory_nums, key_if, str_if, letters, output) == -1)
+        return -1;
+
+    *sa_line = sa_start_line(lines, sb_line);
+    point_2_in_file = ftell(output); // remember point 2 in FILE
+    fseek(output, point_1_in_file, SEEK_SET); // go to start of IF in FILE
+    fprintf(output, "%d JUMP %d", line_num, *sa_line); // without \n !!!! СТРОГО В ТАКОЙ ФОРМЕ "%d JUMP %d"
+    fseek(output, point_2_in_file, SEEK_SET); // back to the end of IF in FILE
+    return 0;
 }
 
 int s_push(Stack_t* stack, const int value)
@@ -300,8 +354,58 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int memory_nums[M
         break;
     }
 
-    case KEYW_IF:
+    case KEYW_IF: {
+        char* ch1 = strtok(str, " ");
+        int c01 = if_get_cell(&sa_line, var_num, memory_nums, ch1, letters, output);
+        char* ch2 = strtok(NULL, " ");
+        char* ch3 = strtok(NULL, " ");
+        int c02 = if_get_cell(&sa_line, var_num, memory_nums, ch3, letters, output);
+
+        char* ch4 = strtok(NULL, " ");
+        int key_if = get_keyword_code(ch4);
+        char* str_if = strtok(NULL, "");
+        // printf("%d %s %d \n%d \n%s", c01, ch2, c02, key_if, str_if);
+        switch (ch2[0])
+        {
+        case '<': {
+            fprintf(output, "%d LOAD %d \n", sa_line, c01);
+            sa_line += 1;
+            fprintf(output, "%d SUB %d \n", sa_line, c02);
+            sa_line += 1;
+            fprintf(output, "%d JNEG %d \n", sa_line, sa_line + 2);
+            sa_line += 1;
+            if_jump_other_oper(&sa_line, lines, sb_line, var_num, memory_nums, key_if, str_if, letters, output);
+            break;
+        }
+        case '>': {
+            fprintf(output, "%d LOAD %d \n", sa_line, c02);
+            sa_line += 1;
+            fprintf(output, "%d SUB %d \n", sa_line, c01);
+            sa_line += 1;
+            fprintf(output, "%d JNEG %d \n", sa_line, sa_line + 2);
+            sa_line += 1;
+            if_jump_other_oper(&sa_line, lines, sb_line, var_num, memory_nums, key_if, str_if, letters, output);
+            break;
+        }
+        case '=': {
+            fprintf(output, "%d LOAD %d \n", sa_line, c01);
+            sa_line += 1;
+            fprintf(output, "%d SUB %d \n", sa_line, c02);
+            sa_line += 1;
+            fprintf(output, "%d JZ %d \n", sa_line, sa_line + 2);
+            sa_line += 1;
+            if_jump_other_oper(&sa_line, lines, sb_line, var_num, memory_nums, key_if, str_if, letters, output);
+            break;
+        }
+
+        default:
+            return -1;
+            break;
+        }
+        lines[1][sb_line] = sa_line - 1;
         break;
+    }
+    break;
 
     case KEYW_LET: {
         char* answer_cell = strtok(str, "= \n");

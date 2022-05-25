@@ -30,6 +30,19 @@ int sa_start_line(int lines[2][MAXLINES], int sb_line);
 
 int check_letter_cell(char cell, int* letters);
 
+int if_get_cell(int* sa_line, int* var_num, int memory_nums[MEMSIZE], char* str, int* letters, FILE* output);
+
+int if_jump_other_oper(
+        int* sa_line,
+        int lines[2][MAXLINES],
+        int sb_line,
+        int* var_num,
+        int memory_nums[MEMSIZE],
+        int key_if,
+        char* str_if,
+        int* letters,
+        FILE* output);
+
 int s_push(Stack_t* stack, const int value);
 
 int s_pop(Stack_t* stack);

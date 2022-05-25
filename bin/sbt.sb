@@ -3,7 +3,7 @@
 30 INPUT B
 
 
-40 LET C = A + B
+40 IF A > B LET C = A + B
 50 GOTO 20
 60 OUTPUT B
 70 END
