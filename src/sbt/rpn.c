@@ -33,7 +33,8 @@ int check_letters(char* str)
     int flag = 0;
     for (int i = 0; str[i] != '\0' && str[i] != '\n'; i++)
     {
-        if (!(str[i] >= 'A' && str[i] <= 'Z') && str[i] != '+' && str[i] != '-' && str[i] != '*' && str[i] != '/' && str[i] != ')' && str[i] != '(')
+        if (!(str[i] >= 'A' && str[i] <= 'Z') && !(str[i] >= '0' && str[i] <= '9') && str[i] != '+' && str[i] != '-' && str[i] != '*' && str[i] != '/'
+            && str[i] != ')' && str[i] != '(')
         {
             return -1;
         }
@@ -171,13 +172,21 @@ int translate_to_rpn(char* RPN, char* str)
         {
             while ((opers->ch) != '(')
             {
+                RPN[point++] = ' ';
                 RPN[point++] = stack_pop(&opers);
+                RPN[point++] = ' ';
             }
             stack_pop(&opers);
         }
-        if (str[k] >= 'A' && str[k] <= 'Z')
+        if (str[k] >= '0' && str[k] <= '9')
         {
             RPN[point++] = str[k];
+        }
+        if (str[k] >= 'A' && str[k] <= 'Z')
+        {
+            RPN[point++] = ' ';
+            RPN[point++] = str[k];
+            RPN[point++] = ' ';
         }
         if (str[k] == '(')
         {
@@ -197,7 +206,9 @@ int translate_to_rpn(char* RPN, char* str)
             {
                 while ((opers != NULL) && (get_prior(opers->ch) >= get_prior(str[k])))
                 {
+                    RPN[point++] = ' ';
                     RPN[point++] = stack_pop(&opers);
+                    RPN[point++] = ' ';
                 }
                 opers = stack_push(opers, str[k]);
             }
@@ -205,7 +216,9 @@ int translate_to_rpn(char* RPN, char* str)
     }
     while (opers != NULL)
     {
+        RPN[point++] = ' ';
         RPN[point++] = stack_pop(&opers);
+        RPN[point++] = ' ';
     }
     RPN[point] = '\0';
     return 0;

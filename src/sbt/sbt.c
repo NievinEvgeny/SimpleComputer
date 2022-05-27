@@ -146,7 +146,7 @@ int check_letter_cell(char cell, int* letters)
     return -1;
 }
 
-int if_get_cell(int* sa_line, int* var_num, int memory_nums[MEMSIZE], char* str, int* letters, FILE* output)
+int if_get_cell(int* var_num, int memory_nums[MEMSIZE], char* str, int* letters, FILE* output)
 {
     if (str[0] >= 'A' && str[0] <= 'Z')
     {
@@ -228,20 +228,14 @@ int s_peek(const Stack_t* stack)
     return stack->data[stack->size - 1];
 }
 
-int parsing_rpn(char* rpn, int answer_cell, int* sa_line, int* letters, FILE* output)
+int parsing_rpn(char* rpn, int answer_cell, int* sa_line, int* letters, FILE* output, int* var_num, int memory_nums[MEMSIZE])
 {
     Stack_t cells;
     cells.size = 0;
 
     for (int i = 0; rpn[i] != '\0'; i++)
     {
-        if (rpn[i] >= 'A' && rpn[i] <= 'Z')
-        {
-            if (letters[rpn[i] - 'A'] == -1)
-                return -1;
-            s_push(&cells, letters[rpn[i] - 'A']);
-        }
-        else if (rpn[i] == '+' || rpn[i] == '-' || rpn[i] == '*' || rpn[i] == '/')
+        if (rpn[i] == '+' || rpn[i] == '-' || rpn[i] == '*' || rpn[i] == '/')
         {
             switch (rpn[i])
             {
@@ -259,6 +253,7 @@ int parsing_rpn(char* rpn, int answer_cell, int* sa_line, int* letters, FILE* ou
 
                 s_pop(&cells);
                 fprintf(output, "%d LOAD %d \n", *sa_line, s_peek(&cells));
+                *sa_line += 1;
                 fprintf(output, "%d SUB %d \n", *sa_line, peek);
                 s_pop(&cells);
                 *sa_line += 1;
@@ -285,7 +280,7 @@ int parsing_rpn(char* rpn, int answer_cell, int* sa_line, int* letters, FILE* ou
                 break;
             }
             }
-            if (rpn[i + 1] == '\0')
+            if (rpn[i + 2] == '\0')
             {
                 fprintf(output, "%d STORE %d \n", *sa_line, answer_cell);
             }
@@ -298,7 +293,26 @@ int parsing_rpn(char* rpn, int answer_cell, int* sa_line, int* letters, FILE* ou
         }
         else
         {
-            return -1;
+            if (rpn[i] != ' ')
+            {
+                char cell[100];
+                int t = 0;
+                for (; rpn[i] != ' ' && rpn[i] != '\n' && rpn[i] != '\0'; i++, t++)
+                {
+                    cell[t] = rpn[i];
+                }
+                cell[t] = '\0';
+
+                int c01 = if_get_cell(var_num, memory_nums, cell, letters, output);
+                s_push(&cells, c01);
+                *sa_line += 1;
+                if (rpn[i + 1] == '\0')
+                {
+                    fprintf(output, "%d LOAD %d \n", *sa_line, s_peek(&cells));
+                    *sa_line += 1;
+                    fprintf(output, "%d STORE %d \n", *sa_line, answer_cell);
+                }
+            }
         }
     }
     return 0;
@@ -369,10 +383,10 @@ int parsing(
 
     case KEYW_IF: {
         char* ch1 = strtok(str, " ");
-        int c01 = if_get_cell(&sa_line, var_num, memory_nums, ch1, letters, output);
+        int c01 = if_get_cell(var_num, memory_nums, ch1, letters, output);
         char* ch2 = strtok(NULL, " ");
         char* ch3 = strtok(NULL, " ");
-        int c02 = if_get_cell(&sa_line, var_num, memory_nums, ch3, letters, output);
+        int c02 = if_get_cell(var_num, memory_nums, ch3, letters, output);
 
         char* ch4 = strtok(NULL, " ");
         int key_if = get_keyword_code(ch4);
@@ -439,7 +453,7 @@ int parsing(
 
         if (translate_to_rpn(rpn, string) == -1)
             return -1;
-        if (parsing_rpn(rpn, letters[answer_cell[0] - 'A'], &sa_line, letters, output) == -1)
+        if (parsing_rpn(rpn, letters[answer_cell[0] - 'A'], &sa_line, letters, output, var_num, memory_nums) == -1)
             return -1;
         lines[1][sb_line] = sa_line;
         break;

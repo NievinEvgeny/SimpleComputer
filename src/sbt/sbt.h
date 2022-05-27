@@ -30,7 +30,7 @@ int sa_start_line(int lines[2][MAXLINES], int sb_line);
 
 int check_letter_cell(char cell, int* letters);
 
-int if_get_cell(int* sa_line, int* var_num, int memory_nums[MEMSIZE], char* str, int* letters, FILE* output);
+int if_get_cell(int* var_num, int memory_nums[MEMSIZE], char* str, int* letters, FILE* output);
 
 int if_jump_other_oper(
         int* sa_line,
@@ -51,7 +51,7 @@ int s_pop(Stack_t* stack);
 
 int s_peek(const Stack_t* stack);
 
-int parsing_rpn(char* rpn, int answer_cell, int* sa_line, int* letters, FILE* output);
+int parsing_rpn(char* rpn, int answer_cell, int* sa_line, int* letters, FILE* output, int* var_num, int memory_nums[MEMSIZE]);
 
 int parsing(
         int lines[2][MAXLINES],
