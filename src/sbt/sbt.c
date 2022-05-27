@@ -109,15 +109,8 @@ int check_in_out(char* str)
     return 0;
 }
 
-int check_goto(char* str, int lines[2][MAXLINES])
+int check_goto(int index, int lines[2][MAXLINES])
 {
-    char* ptr;
-    int index = strtol(str, &ptr, 10);
-
-    if (*ptr != '\n' && *ptr != '\0')
-    {
-        return -1;
-    }
     for (int i = 0; i < MAXLINES; i++)
     {
         if (index == lines[0][i])
@@ -180,7 +173,9 @@ int if_jump_other_oper(
         int key_if,
         char* str_if,
         int* letters,
-        FILE* output)
+        FILE* output,
+        int goto_nums[3][MAXLINES],
+        int* goto_num)
 {
     int line_num;
     int point_1_in_file;
@@ -192,7 +187,7 @@ int if_jump_other_oper(
 
     lines[1][sb_line] = *sa_line;
 
-    if (parsing(lines, sb_line, var_num, memory_nums, key_if, str_if, letters, output) == -1)
+    if (parsing(lines, sb_line, var_num, memory_nums, key_if, str_if, letters, output, goto_nums, goto_num) == -1)
         return -1;
 
     *sa_line = sa_start_line(lines, sb_line);
@@ -309,7 +304,17 @@ int parsing_rpn(char* rpn, int answer_cell, int* sa_line, int* letters, FILE* ou
     return 0;
 }
 
-int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int memory_nums[MEMSIZE], int key, char* str, int* letters, FILE* output)
+int parsing(
+        int lines[2][MAXLINES],
+        int sb_line,
+        int* var_num,
+        int memory_nums[MEMSIZE],
+        int key,
+        char* str,
+        int* letters,
+        FILE* output,
+        int goto_nums[3][MAXLINES],
+        int* goto_num)
 {
     int sa_line = sa_start_line(lines, sb_line);
 
@@ -343,14 +348,22 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int memory_nums[M
         break;
 
     case KEYW_GOTO: {
-        int cell = check_goto(str, lines);
-
-        if (cell == -1)
+        char* ptr;
+        int index = strtol(str, &ptr, 10);
+        if (*ptr != '\n')
         {
             return -1;
         }
-        fprintf(output, "%d JUMP %d \n", sa_line, cell);
+
+        goto_nums[0][*goto_num] = ftell(output); // remember point 1 in FILE
+        goto_nums[1][*goto_num] = sa_line;
+        goto_nums[2][*goto_num] = index;
+
+        fprintf(output, "%d JUMP   \n", sa_line);
+        *goto_num += 1;
+
         lines[1][sb_line] = sa_line;
+
         break;
     }
 
@@ -374,7 +387,7 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int memory_nums[M
             sa_line += 1;
             fprintf(output, "%d JNEG %d \n", sa_line, sa_line + 2);
             sa_line += 1;
-            if_jump_other_oper(&sa_line, lines, sb_line, var_num, memory_nums, key_if, str_if, letters, output);
+            if_jump_other_oper(&sa_line, lines, sb_line, var_num, memory_nums, key_if, str_if, letters, output, goto_nums, goto_num);
             break;
         }
         case '>': {
@@ -384,7 +397,7 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int memory_nums[M
             sa_line += 1;
             fprintf(output, "%d JNEG %d \n", sa_line, sa_line + 2);
             sa_line += 1;
-            if_jump_other_oper(&sa_line, lines, sb_line, var_num, memory_nums, key_if, str_if, letters, output);
+            if_jump_other_oper(&sa_line, lines, sb_line, var_num, memory_nums, key_if, str_if, letters, output, goto_nums, goto_num);
             break;
         }
         case '=': {
@@ -394,7 +407,7 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int memory_nums[M
             sa_line += 1;
             fprintf(output, "%d JZ %d \n", sa_line, sa_line + 2);
             sa_line += 1;
-            if_jump_other_oper(&sa_line, lines, sb_line, var_num, memory_nums, key_if, str_if, letters, output);
+            if_jump_other_oper(&sa_line, lines, sb_line, var_num, memory_nums, key_if, str_if, letters, output, goto_nums, goto_num);
             break;
         }
 
@@ -441,7 +454,16 @@ int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int memory_nums[M
                 fprintf(output, "%d = +%.4d \n", i, memory_nums[i]);
             }
         }
-        lines[1][sb_line] = sa_line;
+        for (int t = 0; t < MEMSIZE; t++)
+        {
+            if (goto_nums[2][t] == -1)
+            {
+                return 0;
+            }
+            fseek(output, goto_nums[0][t], SEEK_SET);
+            int cell = check_goto(goto_nums[2][t], lines);
+            fprintf(output, "%d JUMP %d", goto_nums[1][t], cell);
+        }
         break;
 
     default:
@@ -461,6 +483,8 @@ int main(int argc, char* argv[])
     int letters[ALPHABET]; //Объявленные переменные
     int line_index; //Индекс строки (первый аргумент sb)
     int sb_to_sa_lines[2][MAXLINES]; //Соответствие номера строки sb первой строке sa
+    int goto_nums[3][MAXLINES];
+    int goto_num;
 
     for (int i = 0; i < MEMSIZE; i++)
     {
@@ -474,6 +498,12 @@ int main(int argc, char* argv[])
     {
         sb_to_sa_lines[0][i] = -1;
         sb_to_sa_lines[1][i] = -1;
+    }
+    for (int i = 0; i < MAXLINES; i++)
+    {
+        goto_nums[0][i] = -1;
+        goto_nums[1][i] = -1;
+        goto_nums[2][i] = -1;
     }
 
     if (argc != 3)
@@ -528,7 +558,7 @@ int main(int argc, char* argv[])
             return -1;
         }
 
-        if (parsing(sb_to_sa_lines, line_num, &var_num, memory_nums, keyw, line, letters, output) == -1)
+        if (parsing(sb_to_sa_lines, line_num, &var_num, memory_nums, keyw, line, letters, output, goto_nums, &goto_num) == -1)
         {
             fprintf(output, "Ошибка: не удалось преобразовать строку №%d в simple assembler\n", line_num + 1);
             return -1;

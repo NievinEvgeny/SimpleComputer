@@ -1,9 +1,9 @@
-10 REM some text
 20 INPUT A
 30 INPUT B
 
 
-40 IF A > B LET C = A + B
-50 GOTO 20
-60 OUTPUT B
+40 IF A > B GOTO 55
+50 LET C = A + B
+55 LET C = C + C
+60 OUTPUT C
 70 END

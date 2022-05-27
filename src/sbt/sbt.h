@@ -24,7 +24,7 @@ int get_keyword_code(char* str);
 
 int check_in_out(char* str);
 
-int check_goto(char* str, int lines[2][MAXLINES]);
+int check_goto(int index, int lines[2][MAXLINES]);
 
 int sa_start_line(int lines[2][MAXLINES], int sb_line);
 
@@ -41,7 +41,9 @@ int if_jump_other_oper(
         int key_if,
         char* str_if,
         int* letters,
-        FILE* output);
+        FILE* output,
+        int goto_nums[3][MAXLINES],
+        int* goto_num);
 
 int s_push(Stack_t* stack, const int value);
 
@@ -51,6 +53,16 @@ int s_peek(const Stack_t* stack);
 
 int parsing_rpn(char* rpn, int answer_cell, int* sa_line, int* letters, FILE* output);
 
-int parsing(int lines[2][MAXLINES], int sb_line, int* var_num, int memory_nums[MEMSIZE], int key, char* str, int* letters, FILE* output);
+int parsing(
+        int lines[2][MAXLINES],
+        int sb_line,
+        int* var_num,
+        int memory_nums[MEMSIZE],
+        int key,
+        char* str,
+        int* letters,
+        FILE* output,
+        int goto_nums[3][MAXLINES],
+        int* goto_num);
 
 int main(int argc, char* argv[]);
