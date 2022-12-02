@@ -10,10 +10,10 @@
 #define T 4 //игнорирование тактовых импульсов
 #define E 5 //указана неверная команда
 
-int registr;
-int Memory[MEMORY_SIZE];
-int accumulator;
-int instructionCounter;
+extern int registr;
+extern int Memory[MEMORY_SIZE];
+extern int accumulator;
+extern int instructionCounter;
 
 void sc_memoryInit();
 

@@ -1,6 +1,11 @@
 #include "SimpleComputer.h"
 #include <stdio.h>
 
+int registr;
+int Memory[MEMORY_SIZE];
+int accumulator;
+int instructionCounter;
+
 void sc_memoryInit()
 {
     for (int i = 0; i < MEMORY_SIZE; i++)
