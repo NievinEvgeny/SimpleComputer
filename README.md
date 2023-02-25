@@ -6,6 +6,6 @@
 
 Ниже представлен пример трансляций (Simple Basic -> Simple Assembler) и (Simple Assembler -> бинарный формат):
 
-./sbt filename.sb filname.sa
+./sbt *.sb *.sa
 
-./sat filname.sa filename.o
+./sat *.sa *.o
